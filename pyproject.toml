@@ -8,6 +8,7 @@ authors = ["coma64 <zaton.tristan@gmail.com>"]
 python = "^3.9"
 "discord.py" = "^1.6.0"
 python-dotenv = "^0.15.0"
+coloredlogs = "^15.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
