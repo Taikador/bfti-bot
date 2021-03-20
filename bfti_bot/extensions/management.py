@@ -33,13 +33,28 @@ class Management(Cog):
     async def ping(self, ctx: Context):
         await ctx.send(f'Pong {ctx.author.display_name}')
 
-    @command()
+    @command(aliases=['r'])
     @is_owner()
     async def restart(self, ctx: Context):
         await ctx.send('Restarting...')
         log.warn('Restarting...')
 
         exit(69)
+
+    @command(name='reload-extension', aliases=('re',))
+    @is_owner()
+    async def reload_extension(self, ctx: Context):
+        name = ctx.message.content.split()[1]
+        try:
+            self.bot.reload_extension(
+                f'{self.bot.extension_path.parent.name}.extensions.{name}'
+            )
+        except Exception as exception:
+            log.exception(f'Failed reloading {name}: {exception}')
+            await ctx.message.add_reaction('♿')
+        else:
+            log.info(f'Successfully reloaded {name}')
+            await ctx.message.add_reaction('✅')
 
 
 def setup(bot: Bot):

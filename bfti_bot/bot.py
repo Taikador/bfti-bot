@@ -10,7 +10,7 @@ import aiohttp
 from discord import Guild
 from discord.ext import commands
 from discord.ext.commands import Cog, Command
-from discord.ext.commands.errors import CheckFailure, MissingAnyRole
+from discord.ext.commands.errors import CheckFailure, CommandNotFound, MissingAnyRole
 
 from . import logs
 from .config import config
@@ -49,8 +49,8 @@ class Bot(commands.Bot):
         log.info(f'Cog loaded: {cog.qualified_name}')
 
     def remove_cog(self, name: str) -> Optional[Command]:
-        cog = super().remove_cog(name)
-        log.info(f'Cog removed: {cog.qualified_name}')
+        super().remove_cog(name)
+        log.info(f'Cog removed: {name}')
 
     async def close(self) -> None:
         """Close the Discord connection and the aiohttp session"""
@@ -96,6 +96,8 @@ class Bot(commands.Bot):
 
     async def on_command_error(self, context, exception):
         if isinstance(exception, CheckFailure):
-            log.info(f'Check failed for user {context.author}: ^^{exception}')
+            log.info(f'Check failed for user {context.author}: {exception}')
+        elif isinstance(exception, CommandNotFound):
+            pass
         else:
-            log.exception(f'Unhandled exception: {exception}')
+            log.exception(f'Unhandled "{type(exception)}" exception: {exception}')
