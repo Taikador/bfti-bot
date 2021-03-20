@@ -1,6 +1,6 @@
-from functools import cache
 from os import getenv
 from types import SimpleNamespace
+from typing import List
 
 from dotenv import load_dotenv
 
@@ -9,14 +9,17 @@ class Config(SimpleNamespace):
     """Read only config class loading values from .env and environment"""
 
     def __init__(self):
-        self.token = getenv('BOT_TOKEN', '')
-        self.prefix = getenv('BOT_PREFIX', '-')
-        self.group = getenv('BOT_GROUP', 'yeet')
+        self.token: str = getenv('BOT_TOKEN', '')
+        self.prefix: str = getenv('BOT_PREFIX', '-')
+        self.moderation_roles: List[int] = [
+            int(role_id) for role_id in getenv('MODERATION_ROLES', 'yeet').split(',')
+        ]
+        self.guild_id: int = int(getenv('GUILD_ID', None))
 
-        self.iserv_username = getenv('ISERV_USERNAME', '')
-        self.iserv_password = getenv('ISERV_PASSWORD', '')
+        self.iserv_username: str = getenv('ISERV_USERNAME', '')
+        self.iserv_password: str = getenv('ISERV_PASSWORD', '')
 
-        self.debug = getenv('DEBUG', 'true') != 'false'
+        self.debug: bool = getenv('DEBUG', 'true') != 'false'
 
 
 load_dotenv()
