@@ -25,6 +25,9 @@ class Management(Cog):
             )
         )
 
+        app_info = await self.bot.application_info()
+        await app_info.owner.send('Bot started')
+
     @command()
     @has_any_role(*config.moderation_roles)
     async def ping(self, ctx: Context):
@@ -33,7 +36,7 @@ class Management(Cog):
     @command()
     @is_owner()
     async def restart(self, ctx: Context):
-        await ctx.reply('Restarting...')
+        await ctx.send('Restarting...')
         log.warn('Restarting...')
 
         exit(69)
