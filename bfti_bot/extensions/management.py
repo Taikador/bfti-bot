@@ -31,7 +31,7 @@ class Management(Cog):
     @command(aliases=['r'])
     @is_owner()
     async def restart(self, ctx: Context):
-        await ctx.send('Restarting...')
+        await ctx.message.add_reaction('✅')
         log.warn('Restarting...')
 
         exit(69)
