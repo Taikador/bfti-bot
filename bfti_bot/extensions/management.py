@@ -1,6 +1,6 @@
 from logging import getLogger
 
-from discord.ext.commands import Cog, Context, command, has_any_role
+from discord.ext.commands import Cog, Context, command
 from discord.ext.commands.core import is_owner
 
 from ..bot import Bot
@@ -27,11 +27,6 @@ class Management(Cog):
 
         app_info = await self.bot.application_info()
         await app_info.owner.send('Bot started')
-
-    @command()
-    @has_any_role(*config.moderation_roles)
-    async def ping(self, ctx: Context):
-        await ctx.send(f'Pong {ctx.author.display_name}')
 
     @command(aliases=['r'])
     @is_owner()
