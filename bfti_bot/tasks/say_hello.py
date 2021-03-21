@@ -1,6 +1,5 @@
 from datetime import datetime
 from logging import getLogger
-from pathlib import Path
 
 from discord import TextChannel
 
@@ -14,9 +13,7 @@ log = getLogger('tasks.say_hello')
 
 class SayHello(Task):
     def __init__(self, bot: Bot):
-        path = Path(__file__)
-        self.name = 'tasks.' + path.name[: -len(path.suffix)]
-        self.proper_name = __class__.__name__
+        self.name = self._get_name(__file__)
         self.bot = bot
         self.channel: TextChannel = None
 

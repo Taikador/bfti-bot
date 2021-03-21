@@ -1,4 +1,6 @@
 from abc import ABC, abstractmethod
+from functools import cache, cached_property
+from pathlib import Path
 
 
 def _check_methods(C, *methods):
@@ -14,7 +16,7 @@ def _check_methods(C, *methods):
     return True
 
 
-class Task(ABC):
+class TaskMeta(ABC):
     @abstractmethod
     def run_once(self) -> None:
         raise NotImplementedError
@@ -25,9 +27,20 @@ class Task(ABC):
 
     @classmethod
     def __subclasshook__(cls, subcls):
-        if cls is Task:
+        if cls is TaskMeta:
             return _check_methods(subcls, 'run', 'run_once')
         return NotImplemented
+
+
+class Task(TaskMeta):
+    @cache
+    def _get_name(self, file):
+        path = Path(file)
+        return 'tasks.' + path.name[: -len(path.suffix)]
+
+    @cached_property
+    def proper_name(self):
+        return __class__.__name__
 
 
 class Scheduler(ABC):
