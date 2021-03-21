@@ -24,4 +24,5 @@ class SayHello(Task):
 
 
 def setup(bot: Bot):
-    bot.add_task(SayHello(bot), DefaultScheduler(2.0, bot))
+    # bot.add_task(SayHello(bot), DefaultScheduler(2.0, bot))
+    pass

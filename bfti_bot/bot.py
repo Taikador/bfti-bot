@@ -8,10 +8,11 @@ from typing import Dict, Optional
 
 import aiohttp
 from discord import Guild
+from discord.channel import TextChannel
 from discord.ext import commands
-from tinydb import TinyDB
 from discord.ext.commands import Cog, Command
 from discord.ext.commands.errors import CheckFailure, CommandNotFound
+from tinydb import TinyDB
 
 from bfti_bot.background_task import Scheduler, Task
 
@@ -34,9 +35,10 @@ class Bot(commands.Bot):
         self.tasks: Dict[asyncio.Task] = {}
 
         self.db = TinyDB('db.json')
-        self.http_session: Optional[aiohttp.ClientSession] = None
+        self.http_session = aiohttp.ClientSession()
         self._guild_available = asyncio.Event()
         self.channel_available = asyncio.Event()
+        self.channel: TextChannel = None
 
         self.load_extensions()
         self.load_tasks()
@@ -105,9 +107,6 @@ class Bot(commands.Bot):
 
         self.channel = self.get_channel(config.channel_id)
         self.channel_available.set()
-
-        app_info = await self.application_info()
-        await app_info.owner.send('Bot started')
 
     async def on_guild_available(self, guild: Guild) -> None:
         if guild.id != config.guild_id:
