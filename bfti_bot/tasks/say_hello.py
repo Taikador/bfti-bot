@@ -1,3 +1,4 @@
+from datetime import datetime
 from logging import getLogger
 
 from discord import TextChannel
@@ -16,9 +17,14 @@ class SayHello(Task):
         self.bot = bot
         self.channel: TextChannel = None
 
-    async def run(self):
+    async def run_once(self) -> None:
         await self.bot.channel_available.wait()
-        await self.bot.channel.send(f'Hello from {self.bot.user}')
+        self.start = datetime.now()
+
+    async def run(self):
+        await self.bot.channel.send(
+            f'Hello from {self.bot.user}, running for {(datetime.now() - self.start).seconds}'
+        )
 
 
 def setup(bot: Bot):

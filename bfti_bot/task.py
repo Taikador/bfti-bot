@@ -20,13 +20,17 @@ def _check_methods(C, *methods):
 
 class Task(ABC):
     @abstractmethod
+    def run_once(self) -> None:
+        raise NotImplementedError
+
+    @abstractmethod
     def run(self) -> None:
         raise NotImplementedError
 
     @classmethod
     def __subclasshook__(cls, subcls):
         if cls is Task:
-            return _check_methods(subcls, 'run')
+            return _check_methods(subcls, 'run', 'run_once')
         return NotImplemented
 
 
@@ -51,6 +55,11 @@ class DefaultScheduler(Scheduler):
         await self.bot.wait_until_ready()
         await self.bot.wait_until_guild_available()
         is_coro = iscoroutinefunction(task.run)
+
+        if iscoroutinefunction(task.run_once):
+            await task.run_once()
+        else:
+            task.run_once()
 
         while not self.bot.is_closed():
             if is_coro:
