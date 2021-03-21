@@ -6,19 +6,18 @@ from contextlib import suppress
 from logging import getLogger
 from os import listdir
 from pathlib import Path
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, Dict, Optional
 
 import aiohttp
 from discord import Guild
 from discord.ext import commands
-from discord.ext.commands import Bot, Cog, Command
+from discord.ext.commands import Cog, Command
 from discord.ext.commands.errors import CheckFailure, CommandNotFound
+
+from bfti_bot.task import Scheduler, Task
 
 from . import logs
 from .config import config
-
-if TYPE_CHECKING:
-    from bfti_bot.task import Scheduler, Task
 
 logs.setup()
 log = getLogger('bot')
@@ -32,6 +31,8 @@ class Bot(commands.Bot):
 
         self.extension_path: Path = Path(__file__).parent / 'extensions'
         self.task_path: Path = Path(__file__).parent / 'tasks'
+
+        self.tasks: Dict[asyncio.Task] = {}
 
         # tinydb?
         self.http_session: Optional[aiohttp.ClientSession] = None
@@ -57,6 +58,11 @@ class Bot(commands.Bot):
                 name = file[:-3]
                 self.load_extension(f'{self.task_path.parent.name}.tasks.{name}')
 
+    def reload_extension(self, name):
+        if name.startswith('tasks.'):
+            self.tasks[name].cancel()
+        super().reload_extension(f'{self.extension_path.parent.name}.{name}')
+
     def add_cog(self, cog: Cog) -> None:
         """Adds a "cog" to the bot and logs the operation."""
         super().add_cog(cog)
@@ -67,8 +73,11 @@ class Bot(commands.Bot):
         log.info(f'Cog removed: {name}')
 
     def add_task(self, task: Task, scheduler: Scheduler):
-        self.loop.create_task(scheduler.run_forever(task))
-        log.info(f'Task started: {task.name}')
+        if not isinstance(task, Task):
+            raise TypeError(f'Task "{task.name}" does not inherit from Task abc')
+
+        self.tasks[task.name] = self.loop.create_task(scheduler.run_forever(task))
+        log.info(f'Task started: {task.proper_name}')
 
     async def close(self) -> None:
         """Close the Discord connection and the aiohttp session"""

@@ -8,6 +8,7 @@ A discord bot that displays IServ exercises and E-Mails
       fetching) from `tasks`
 - [x] Rewrite yeet command
 - [x] Task run_once() method
-- [ ] Task reloading
+- [x] Task reloading
+- [ ] Make Task.run_once() optional
 - [ ] Fetch and display new mails and excercises
 - [ ] Fix console errors on ctrl c - restart not working

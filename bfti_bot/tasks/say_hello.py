@@ -1,19 +1,22 @@
 from datetime import datetime
 from logging import getLogger
+from pathlib import Path
 
 from discord import TextChannel
 
 from bfti_bot.bot import Bot
 
-from ..config import config
-from ..task import DefaultScheduler, Task
+from ..task import Task
+from ..default_scheduler import DefaultScheduler
 
 log = getLogger('tasks.say_hello')
 
 
 class SayHello(Task):
     def __init__(self, bot: Bot):
-        self.name = 'say_hello'
+        path = Path(__file__)
+        self.name = 'tasks.' + path.name[: -len(path.suffix)]
+        self.proper_name = __class__.__name__
         self.bot = bot
         self.channel: TextChannel = None
 

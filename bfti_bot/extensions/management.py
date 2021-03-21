@@ -4,7 +4,6 @@ from discord.ext.commands import Cog, Context, command
 from discord.ext.commands.core import is_owner
 
 from ..bot import Bot
-from ..config import config
 
 log = getLogger('extensions.hello')
 
@@ -26,9 +25,10 @@ class Management(Cog):
     async def reload_extension(self, ctx: Context):
         name = ctx.message.content.split()[1]
         try:
-            self.bot.reload_extension(
-                f'{self.bot.extension_path.parent.name}.extensions.{name}'
-            )
+            if f'tasks.{name}' in self.bot.tasks:
+                self.bot.reload_extension(f'tasks.{name}')
+            else:
+                self.bot.reload_extension(f'extensions.{name}')
         except Exception as exception:
             log.exception(f'Failed reloading {name}: {exception}')
             await ctx.message.add_reaction('♿')
