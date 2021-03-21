@@ -13,21 +13,6 @@ class Management(Cog):
     def __init__(self, bot: Bot):
         self.bot = bot
 
-    @Cog.listener()
-    async def on_ready(self):
-        log.info(f'Logged in as {self.bot.user}')
-
-        await self.bot.wait_until_guild_available()
-        log.info(
-            'Now serving in guild: '
-            + next(
-                guild.name for guild in self.bot.guilds if guild.id == config.guild_id
-            )
-        )
-
-        app_info = await self.bot.application_info()
-        await app_info.owner.send('Bot started')
-
     @command(aliases=['r'])
     @is_owner()
     async def restart(self, ctx: Context):

@@ -36,6 +36,7 @@ class Bot(commands.Bot):
         # tinydb?
         self.http_session: Optional[aiohttp.ClientSession] = None
         self._guild_available = asyncio.Event()
+        self.channel_available = asyncio.Event()
 
         self.load_extensions()
         self.load_tasks()
@@ -83,6 +84,22 @@ class Bot(commands.Bot):
         await super().close()
         self.loop.stop()
         self.loop.close()
+        # ?????
+
+    async def on_ready(self):
+        log.info(f'Logged in as {self.user}')
+
+        await self.wait_until_guild_available()
+        log.info(
+            'Now serving in guild: '
+            + next(guild.name for guild in self.guilds if guild.id == config.guild_id)
+        )
+
+        self.channel = self.get_channel(config.channel_id)
+        self.channel_available.set()
+
+        app_info = await self.application_info()
+        await app_info.owner.send('Bot started')
 
     async def on_guild_available(self, guild: Guild) -> None:
         """

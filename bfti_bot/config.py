@@ -15,6 +15,7 @@ class Config(SimpleNamespace):
             int(role_id) for role_id in getenv('MODERATION_ROLES', 'yeet').split(',')
         ]
         self.guild_id: int = int(getenv('GUILD_ID', None))
+        self.channel_id: int = int(getenv('CHANNEL_ID', None))
 
         self.iserv_username: str = getenv('ISERV_USERNAME', '')
         self.iserv_password: str = getenv('ISERV_PASSWORD', '')
