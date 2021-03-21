@@ -1,11 +1,14 @@
 from datetime import datetime
 from logging import getLogger
+from os import remove
 from pprint import pprint
 from typing import Iterator
 
 from attr import dataclass
 from bs4 import BeautifulSoup
 from discord import Colour, Embed
+from tinydb import where
+from tinydb.operations import set
 
 from bfti_bot.bot import Bot
 
@@ -19,6 +22,7 @@ log = getLogger('tasks.iserv_exercises')
 class Exercise:
     id: int = None
     author: str = None
+    title: str = None
     message: str = None
     url: str = None
     end_date: datetime = None
@@ -52,7 +56,7 @@ class IservExercises(Task):
 
         for id in not_shown_excercises:
             exercise = await self._get_exercise(id)
-            embed = await self._generate_new_embed(exercise)
+            embed = await self._generate_embed(exercise)
             await self.bot.channel.send(content='@everyone', embed=embed)
 
             self.shown_excercises.insert(
@@ -63,12 +67,35 @@ class IservExercises(Task):
                 }
             )
 
-    async def _generate_new_embed(self, exercise: Exercise) -> None:
+        should_be_reminded = [
+            elem['id']
+            for elem in self.shown_excercises.all()
+            if not elem['reminder_shown']
+            and (
+                (datetime.fromtimestamp(elem['end_date']) - datetime.now()).seconds / 60
+            )
+            < 60
+        ]
+        for id in should_be_reminded:
+            exercise = await self._get_exercise(id)
+            embed = await self._generate_embed(exercise, is_reminder=True)
+            await self.bot.channel.send(content='@everyone', embed=embed)
+
+            self.shown_excercises.update(
+                set('reminder_shown', True), where('id') == exercise.id
+            )
+
+    async def _generate_embed(self, exercise: Exercise, is_reminder=False) -> None:
+        title = (
+            f'Abgabe in 1h: {exercise.title}'
+            if is_reminder
+            else f'Neue Aufgabe: {exercise.title}'
+        )
         embed = Embed(
-            title=f'Neue Aufgabe: {exercise.author}',
+            title=title,
             type='rich',
             timestamp=datetime.now(),
-            colour=Colour.dark_purple(),
+            colour=Colour.orange() if is_reminder else Colour.dark_purple(),
             url=exercise.url,
         )
 
@@ -77,8 +104,7 @@ class IservExercises(Task):
             name='Nachricht',
             value=exercise.message,
         )
-        embed.insert_field_at(
-            3,
+        embed.add_field(
             name='Abgabetermin',
             value=exercise.end_date.strftime(self.datetime_format),
         )
@@ -89,18 +115,21 @@ class IservExercises(Task):
     async def _get_exercise(self, id) -> Exercise:
         url = f'https://bbs2celle.eu/iserv/exercise/show/{id}'
         async with self.bot.http_session.get(url) as response:
-            embed = Exercise(url=url, id=id)
+            exercise = Exercise(url=url, id=id)
             soup = BeautifulSoup(await response.text(), "html.parser")
 
             info_table = soup.find(class_='bb0')
             info_tds = info_table.find_all('td')
-            embed.author = info_tds[0].find('a').text
-            embed.end_date = datetime.strptime(info_tds[2].text, self.datetime_format)
+            exercise.author = info_tds[0].find('a').text
+            exercise.end_date = datetime.strptime(
+                info_tds[2].text, self.datetime_format
+            )
+            exercise.title = soup.find('h1').text
 
             msg_ps = soup.find(True, {'class': ['p-3', 'text-break-word']}).findAll('p')
-            embed.message = '\n'.join([p.text for p in msg_ps])
+            exercise.message = '\n'.join([p.text for p in msg_ps])
 
-            return embed
+            return exercise
 
     async def _get_excercise_ids(self) -> Iterator[int]:
         async with self.bot.http_session.post(
