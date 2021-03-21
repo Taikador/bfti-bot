@@ -11,7 +11,7 @@ from typing import TYPE_CHECKING, Optional
 import aiohttp
 from discord import Guild
 from discord.ext import commands
-from discord.ext.commands import Cog, Command
+from discord.ext.commands import Bot, Cog, Command
 from discord.ext.commands.errors import CheckFailure, CommandNotFound
 
 from . import logs
@@ -51,6 +51,12 @@ class Bot(commands.Bot):
                     f'{self.extension_path.parent.name}.extensions.{name}'
                 )
 
+    def load_tasks(self) -> None:
+        for file in listdir(self.task_path):
+            if file.endswith('.py'):
+                name = file[:-3]
+                self.load_extension(f'{self.task_path.parent.name}.tasks.{name}')
+
     def add_cog(self, cog: Cog) -> None:
         """Adds a "cog" to the bot and logs the operation."""
         super().add_cog(cog)
@@ -59,12 +65,6 @@ class Bot(commands.Bot):
     def remove_cog(self, name: str) -> Optional[Command]:
         super().remove_cog(name)
         log.info(f'Cog removed: {name}')
-
-    def load_tasks(self) -> None:
-        for file in listdir(self.task_path):
-            if file.endswith('.py'):
-                name = file[:-3]
-                self.load_extension(f'{self.task_path.parent.name}.tasks.{name}')
 
     def add_task(self, task: Task, scheduler: Scheduler):
         self.loop.create_task(scheduler.run_forever(task))
@@ -102,16 +102,12 @@ class Bot(commands.Bot):
         await app_info.owner.send('Bot started')
 
     async def on_guild_available(self, guild: Guild) -> None:
-        """
-        Set the internal guild available event when `config.guild_id` becomes available.
-        """
         if guild.id != config.guild_id:
             return
 
         self._guild_available.set()
 
     async def on_guild_unavailable(self, guild: Guild) -> None:
-        """Clear the internal guild available event when `config.guild_id` becomes unavailable."""
         if guild.id != config.guild_id:
             return
 
@@ -126,7 +122,6 @@ class Bot(commands.Bot):
         await self._guild_available.wait()
 
     async def on_error(self, event: str, *args, **kwargs) -> None:
-        """Log errors raised in event listeners rather than printing them to stderr."""
         log.exception(f'Unhandled exception in {event}')
 
     async def on_command_error(self, context, exception):
