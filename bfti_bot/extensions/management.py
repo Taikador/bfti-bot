@@ -12,7 +12,7 @@ class Management(Cog):
     def __init__(self, bot: Bot):
         self.bot = bot
 
-    @command(aliases=['r'])
+    @command(aliases=['r'], description='Restarts the bot')
     @is_owner()
     async def restart(self, ctx: Context) -> None:
         await ctx.message.add_reaction('✅')
@@ -20,7 +20,12 @@ class Management(Cog):
 
         exit(69)
 
-    @command(name='reload-extension', aliases=('re',))
+    @command(
+        name='reload-extension',
+        aliases=('re',),
+        usage='<filename without extension>',
+        description='Reloads a extension',
+    )
     @is_owner()
     async def reload_extension(self, ctx: Context) -> None:
         name = ctx.message.content.split()[1]

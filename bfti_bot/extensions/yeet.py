@@ -17,7 +17,11 @@ class Yeet(Cog):
     def __init__(self, bot: Bot):
         self.bot = bot
 
-    @command(aliases=['y'], usage='<user> <time in s> [<channel regex>]')
+    @command(
+        aliases=['y'],
+        usage='<user> <time in s> [<channel regex>]',
+        description='Repeatly changes a users voice channel',
+    )
     @has_any_role(*config.moderation_roles)
     async def yeet(self, ctx: Context) -> None:
         msg: Message = ctx.message
