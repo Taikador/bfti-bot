@@ -1,19 +1,24 @@
 # credits: https://github.com/python-discord/bot/blob/main/bot/bot.py
+from __future__ import annotations
+
 import asyncio
 from contextlib import suppress
 from logging import getLogger
 from os import listdir
 from pathlib import Path
-from typing import Optional
+from typing import TYPE_CHECKING, Optional
 
 import aiohttp
 from discord import Guild
 from discord.ext import commands
 from discord.ext.commands import Cog, Command
-from discord.ext.commands.errors import CheckFailure, CommandNotFound, MissingAnyRole
+from discord.ext.commands.errors import CheckFailure, CommandNotFound
 
 from . import logs
 from .config import config
+
+if TYPE_CHECKING:
+    from bfti_bot.task import Scheduler, Task
 
 logs.setup()
 log = getLogger('bot')
@@ -26,12 +31,14 @@ class Bot(commands.Bot):
         super().__init__(*args, **kwargs)
 
         self.extension_path: Path = Path(__file__).parent / 'extensions'
+        self.task_path: Path = Path(__file__).parent / 'tasks'
 
         # tinydb?
         self.http_session: Optional[aiohttp.ClientSession] = None
         self._guild_available = asyncio.Event()
 
         self.load_extensions()
+        self.load_tasks()
 
     def load_extensions(self) -> None:
         """Load all extensions"""
@@ -52,6 +59,16 @@ class Bot(commands.Bot):
         super().remove_cog(name)
         log.info(f'Cog removed: {name}')
 
+    def load_tasks(self) -> None:
+        for file in listdir(self.task_path):
+            if file.endswith('.py'):
+                name = file[:-3]
+                self.load_extension(f'{self.task_path.parent.name}.tasks.{name}')
+
+    def add_task(self, task: Task, scheduler: Scheduler):
+        self.loop.create_task(scheduler.run_forever(task))
+        log.info(f'Task started: {task.name}')
+
     async def close(self) -> None:
         """Close the Discord connection and the aiohttp session"""
         # Done before super().close() to allow tasks finish before the HTTP session closes.
@@ -62,9 +79,10 @@ class Bot(commands.Bot):
         if self.http_session:
             await self.http_session.close()
 
-        self.loop.close()
         # Now actually do full close of bot
         await super().close()
+        self.loop.stop()
+        self.loop.close()
 
     async def on_guild_available(self, guild: Guild) -> None:
         """
