@@ -9,7 +9,7 @@ import coloredlogs
 from .config import config
 
 
-def setup():
+def setup() -> None:
     log_level = logging.INFO if config.debug else logging.WARN
     format_string = "%(asctime)s | %(name)s | %(levelname)s | %(message)s"
     log_format = logging.Formatter(format_string)

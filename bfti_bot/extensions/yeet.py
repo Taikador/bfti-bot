@@ -19,7 +19,7 @@ class Yeet(Cog):
 
     @command(aliases=['y'], usage='<user> <time in s> [<channel regex>]')
     @has_any_role(*config.moderation_roles)
-    async def yeet(self, ctx: Context):
+    async def yeet(self, ctx: Context) -> None:
         msg: Message = ctx.message
 
         if len(msg.mentions) < 1:
@@ -88,5 +88,5 @@ class Yeet(Cog):
                 await sleep(0.6)
 
 
-def setup(bot: Bot):
+def setup(bot: Bot) -> None:
     bot.add_cog(Yeet(bot))

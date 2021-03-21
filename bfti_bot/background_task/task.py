@@ -1,9 +1,13 @@
 from abc import ABC, abstractmethod
 from functools import cache, cached_property
 from pathlib import Path
+from typing import Any, Union
 
 
-def _check_methods(C, *methods):
+NotImplementedType = type(NotImplemented)
+
+
+def _check_methods(C, *methods) -> Union[bool, NotImplementedType]:
     mro = C.__mro__
     for method in methods:
         for B in mro:
@@ -25,7 +29,7 @@ class TaskMeta(ABC):
         raise NotImplementedError
 
     @classmethod
-    def __subclasshook__(cls, subcls):
+    def __subclasshook__(cls, subcls: Any) -> Union[bool, NotImplementedType]:
         if cls is TaskMeta:
             return _check_methods(subcls, 'run')
         return NotImplemented
@@ -33,22 +37,22 @@ class TaskMeta(ABC):
 
 class Task(TaskMeta):
     @cache
-    def _get_name(self, file):
+    def _get_name(self, file: str) -> str:
         path = Path(file)
         return 'tasks.' + path.name[: -len(path.suffix)]
 
     @cached_property
-    def proper_name(self):
+    def proper_name(self) -> str:
         return __class__.__name__
 
 
 class Scheduler(ABC):
     @abstractmethod
-    async def run_forever(self, task: Task):
+    async def run_forever(self, task: Task) -> None:
         raise NotImplementedError
 
     @classmethod
-    def __subclasshook__(cls, subcls):
+    def __subclasshook__(cls, subcls: Any) -> Union[bool, NotImplementedType]:
         if cls is Task:
             return _check_methods(subcls, 'run_forever')
         return NotImplemented

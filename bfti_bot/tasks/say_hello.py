@@ -17,12 +17,12 @@ class SayHello(Task):
         await self.bot.channel_available.wait()
         self.start = datetime.now()
 
-    async def run(self):
+    async def run(self) -> None:
         await self.bot.channel.send(
             f'Hello from {self.bot.user}, running for {(datetime.now() - self.start).seconds}'
         )
 
 
-def setup(bot: Bot):
+def setup(bot: Bot) -> None:
     # bot.add_task(SayHello(bot), DefaultScheduler(2.0, bot))
     pass

@@ -14,7 +14,7 @@ class Management(Cog):
 
     @command(aliases=['r'])
     @is_owner()
-    async def restart(self, ctx: Context):
+    async def restart(self, ctx: Context) -> None:
         await ctx.message.add_reaction('✅')
         log.warn('Restarting...')
 
@@ -22,7 +22,7 @@ class Management(Cog):
 
     @command(name='reload-extension', aliases=('re',))
     @is_owner()
-    async def reload_extension(self, ctx: Context):
+    async def reload_extension(self, ctx: Context) -> None:
         name = ctx.message.content.split()[1]
         try:
             if f'tasks.{name}' in self.bot.tasks:

@@ -1,7 +1,5 @@
 from datetime import datetime
 from logging import getLogger
-from os import remove
-from pprint import pprint
 from typing import Iterator
 
 from attr import dataclass
@@ -112,7 +110,7 @@ class IservExercises(Task):
 
         return embed
 
-    async def _get_exercise(self, id) -> Exercise:
+    async def _get_exercise(self, id: int) -> Exercise:
         url = f'https://bbs2celle.eu/iserv/exercise/show/{id}'
         async with self.bot.http_session.get(url) as response:
             exercise = Exercise(url=url, id=id)
@@ -147,5 +145,5 @@ class IservExercises(Task):
             return exercise_ids
 
 
-def setup(bot: Bot):
+def setup(bot: Bot) -> None:
     bot.add_task(IservExercises(bot), DefaultScheduler(60.0, bot))

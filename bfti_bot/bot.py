@@ -59,7 +59,7 @@ class Bot(commands.Bot):
                 name = file[:-3]
                 self.load_extension(f'{self.task_path.parent.name}.tasks.{name}')
 
-    def reload_extension(self, name):
+    def reload_extension(self, name: str) -> None:
         if name.startswith('tasks.'):
             self.tasks[name].cancel()
         super().reload_extension(f'{self.extension_path.parent.name}.{name}')
@@ -69,11 +69,11 @@ class Bot(commands.Bot):
         super().add_cog(cog)
         log.info(f'Cog loaded: {cog.qualified_name}')
 
-    def remove_cog(self, name: str) -> Optional[Command]:
+    def remove_cog(self, name: str) -> None:
         super().remove_cog(name)
         log.info(f'Cog removed: {name}')
 
-    def add_task(self, task: Task, scheduler: Scheduler):
+    def add_task(self, task: Task, scheduler: Scheduler) -> None:
         if not isinstance(task, Task):
             raise TypeError(f'Task "{task.name}" does not inherit from Task abc')
 
@@ -96,7 +96,7 @@ class Bot(commands.Bot):
         self.loop.close()
         # ?????
 
-    async def on_ready(self):
+    async def on_ready(self) -> None:
         log.info(f'Logged in as {self.user}')
 
         await self.wait_until_guild_available()
@@ -131,7 +131,7 @@ class Bot(commands.Bot):
     async def on_error(self, event: str, *args, **kwargs) -> None:
         log.exception(f'Unhandled exception in {event}')
 
-    async def on_command_error(self, context, exception):
+    async def on_command_error(self, context, exception) -> None:
         if isinstance(exception, CheckFailure):
             log.info(f'Check failed for user {context.author}: {exception}')
         elif isinstance(exception, CommandNotFound):
