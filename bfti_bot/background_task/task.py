@@ -22,10 +22,12 @@ def _check_methods(C, *methods) -> Union[bool, NotImplementedType]:
 
 class TaskMeta(ABC):
     async def run_once(self) -> None:
+        """May be a method or coroutine"""
         pass
 
     @abstractmethod
     async def run(self) -> None:
+        """May be a method or coroutine"""
         raise NotImplementedError
 
     @classmethod
@@ -36,6 +38,8 @@ class TaskMeta(ABC):
 
 
 class Task(TaskMeta):
+    """All tasks should inherit from this class"""
+
     @cache
     def _get_name(self, file: str) -> str:
         path = Path(file)

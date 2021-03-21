@@ -14,6 +14,10 @@ log = getLogger('default_scheduler')
 
 
 class DefaultScheduler(Scheduler):
+    """Simple Scheduler implementation
+
+    Runs tasks after a set amount of time"""
+
     def __init__(self, delay_in_s: float, bot: Bot):
         self.delay = delay_in_s
         self.bot = bot
