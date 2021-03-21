@@ -9,6 +9,7 @@ from typing import Dict, Optional
 import aiohttp
 from discord import Guild
 from discord.ext import commands
+from tinydb import TinyDB
 from discord.ext.commands import Cog, Command
 from discord.ext.commands.errors import CheckFailure, CommandNotFound
 
@@ -32,7 +33,7 @@ class Bot(commands.Bot):
 
         self.tasks: Dict[asyncio.Task] = {}
 
-        # tinydb?
+        self.db = TinyDB('db.json')
         self.http_session: Optional[aiohttp.ClientSession] = None
         self._guild_available = asyncio.Event()
         self.channel_available = asyncio.Event()
