@@ -17,18 +17,17 @@ def _check_methods(C, *methods):
 
 
 class TaskMeta(ABC):
-    @abstractmethod
-    def run_once(self) -> None:
-        raise NotImplementedError
+    async def run_once(self) -> None:
+        pass
 
     @abstractmethod
-    def run(self) -> None:
+    async def run(self) -> None:
         raise NotImplementedError
 
     @classmethod
     def __subclasshook__(cls, subcls):
         if cls is TaskMeta:
-            return _check_methods(subcls, 'run', 'run_once')
+            return _check_methods(subcls, 'run')
         return NotImplemented
 
 

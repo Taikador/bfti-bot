@@ -5,8 +5,8 @@ from discord import TextChannel
 
 from bfti_bot.bot import Bot
 
-from ..task import Task
 from ..default_scheduler import DefaultScheduler
+from ..task import Task
 
 log = getLogger('tasks.say_hello')
 
@@ -28,4 +28,4 @@ class SayHello(Task):
 
 
 def setup(bot: Bot):
-    bot.add_task(SayHello(bot), DefaultScheduler(10.0, bot))
+    bot.add_task(SayHello(bot), DefaultScheduler(2.0, bot))
