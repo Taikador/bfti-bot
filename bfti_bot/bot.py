@@ -1,12 +1,10 @@
 # credits: https://github.com/python-discord/bot/blob/main/bot/bot.py
-from __future__ import annotations
-
 import asyncio
 from contextlib import suppress
 from logging import getLogger
 from os import listdir
 from pathlib import Path
-from typing import TYPE_CHECKING, Dict, Optional
+from typing import Dict, Optional
 
 import aiohttp
 from discord import Guild
@@ -14,7 +12,7 @@ from discord.ext import commands
 from discord.ext.commands import Cog, Command
 from discord.ext.commands.errors import CheckFailure, CommandNotFound
 
-from bfti_bot.task import Scheduler, Task
+from bfti_bot.background_task import Scheduler, Task
 
 from . import logs
 from .config import config

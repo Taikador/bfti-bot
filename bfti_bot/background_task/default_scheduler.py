@@ -1,9 +1,14 @@
+from __future__ import annotations
+
 from asyncio import sleep
 from inspect import iscoroutinefunction
 from logging import getLogger
+from typing import TYPE_CHECKING
 
-from .bot import Bot
 from .task import Scheduler, Task
+
+if TYPE_CHECKING:
+    from ..bot import Bot
 
 log = getLogger('default_scheduler')
 

@@ -5,8 +5,7 @@ from discord import TextChannel
 
 from bfti_bot.bot import Bot
 
-from ..default_scheduler import DefaultScheduler
-from ..task import Task
+from ..background_task import DefaultScheduler, Task
 
 log = getLogger('tasks.say_hello')
 
