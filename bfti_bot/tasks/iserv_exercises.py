@@ -106,7 +106,6 @@ class IservExercises(Task):
         embed = Embed(
             title=title,
             type='rich',
-            timestamp=datetime.now(),
             colour=Colour.orange() if is_reminder else Colour.dark_purple(),
             url=exercise.url,
         )
