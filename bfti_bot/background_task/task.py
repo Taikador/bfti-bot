@@ -3,7 +3,6 @@ from functools import cache, cached_property
 from pathlib import Path
 from typing import Any, Union
 
-
 NotImplementedType = type(NotImplemented)
 
 
@@ -21,6 +20,9 @@ def _check_methods(C, *methods) -> Union[bool, NotImplementedType]:
 
 
 class TaskMeta(ABC):
+    name: str
+    proper_name: str
+
     async def run_once(self) -> None:
         """May be a method or coroutine"""
         pass

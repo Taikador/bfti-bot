@@ -34,12 +34,13 @@ class Config(SimpleNamespace):
     def _getenv_or_throw(self, key: str, default: str = None) -> str:
         value = getenv(key)
 
-        if value == None and default == None:
-            raise ConfigError(key)
-        elif value == None:
-            return default
-        else:
-            return value
+        if value == None:
+            if default != None:
+                return default
+            else:
+                raise ConfigError(key)
+
+        return value
 
 
 load_dotenv()

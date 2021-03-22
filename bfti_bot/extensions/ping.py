@@ -11,7 +11,7 @@ class Ping(Cog):
     @command(description='Pong game :D')
     @has_any_role(*config.moderation_roles)
     async def ping(self, ctx: Context) -> None:
-        await ctx.send(f'Pong {ctx.author.display_name}')
+        await ctx.send(f'Pong {ctx.author}')
 
 
 def setup(bot: Bot) -> None:

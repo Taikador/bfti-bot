@@ -83,7 +83,7 @@ class IservExercises(Task):
                 set('reminder_shown', True), where('id') == exercise.id
             )
 
-    async def _generate_embed(self, exercise: Exercise, is_reminder=False) -> None:
+    async def _generate_embed(self, exercise: Exercise, is_reminder=False) -> Embed:
         title = (
             f'Abgabe in 1h: {exercise.title}'
             if is_reminder
@@ -113,7 +113,9 @@ class IservExercises(Task):
     async def _get_exercise(self, id: int) -> Exercise:
         url = f'https://bbs2celle.eu/iserv/exercise/show/{id}'
         async with self.bot.http_session.get(url) as response:
-            exercise = Exercise(url=url, id=id)
+            exercise = Exercise(
+                url=url, id=id
+            )  # pyright: reportGeneralTypeIssues=false
             soup = BeautifulSoup(await response.text(), "html.parser")
 
             info_table = soup.find(class_='bb0')

@@ -31,13 +31,13 @@ class DefaultScheduler(Scheduler):
             if iscoroutinefunction(task.run_once):
                 await task.run_once()
             else:
-                task.run_once()
+                task.run_once()  # type: ignore
 
             while not self.bot.is_closed():
                 if is_coro:
                     await task.run()
                 else:
-                    task.run()
+                    task.run()  # type: ignore
 
                 await sleep(self.delay)
         except Exception as exception:

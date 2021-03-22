@@ -32,13 +32,13 @@ class Bot(commands.Bot):
         self.extension_path: Path = Path(__file__).parent / 'extensions'
         self.task_path: Path = Path(__file__).parent / 'tasks'
 
-        self.tasks: Dict[asyncio.Task] = {}
+        self.tasks: Dict[str, asyncio.Task] = {}
 
         self.db = TinyDB('db.json')
         self.http_session = aiohttp.ClientSession()
         self._guild_available = asyncio.Event()
         self.channel_available = asyncio.Event()
-        self.channel: TextChannel = None
+        self.channel: Optional[TextChannel] = None
 
         self.load_extensions()
         self.load_tasks()

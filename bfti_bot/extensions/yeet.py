@@ -4,7 +4,7 @@ from logging import getLogger
 from time import time
 from typing import List
 
-from discord import Member, Message, VoiceChannel
+from discord import Guild, Member, Message, VoiceChannel
 from discord.ext.commands import Cog, Context, command, has_any_role
 
 from ..bot import Bot
@@ -24,6 +24,9 @@ class Yeet(Cog):
     )
     @has_any_role(*config.moderation_roles)
     async def yeet(self, ctx: Context) -> None:
+        if not ctx.message:
+            await ctx.send(ctx.command.usage)
+            return
         msg: Message = ctx.message
 
         if len(msg.mentions) < 1:
@@ -37,7 +40,7 @@ class Yeet(Cog):
         target_member: Member = target
 
         if not target_member.voice:
-            await ctx.send(f'User <@!{target_member.id}> has to be in a voice channel')
+            await ctx.send(f'User <@!{target_member}> has to be in a voice channel')
             return
 
         args: List[str] = ctx.message.content.split(' ')
@@ -60,9 +63,19 @@ class Yeet(Cog):
                 args[1:],
             )
         )
+
+        if not ctx.guild:
+            await ctx.send(f'User <@!{target_member}> has to be in a voice channel')
+            return
+
+        guild: Guild = ctx.guild  # pyright: reportGeneralTypeIssues=false
+
+        if not guild.voice_channels:
+            await ctx.send("Something wen't wrong")
+            return
         channels = [
             channel
-            for channel in ctx.guild.voice_channels
+            for channel in guild.voice_channels
             if any(pattern.match(channel.name) for pattern in patterns)
         ]
         if len(channels) < 2:
@@ -70,7 +83,7 @@ class Yeet(Cog):
             return
 
         await ctx.send(
-            f'User <@!{target_member.id}> will be moved around between {[channel.name for channel in channels]} for {duration}s'
+            f'User <@!{target_member}> will be moved around between {[channel.name for channel in channels]} for {duration}s'
         )
 
         prev_channel = target_member.voice.channel
