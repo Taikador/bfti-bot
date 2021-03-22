@@ -1,6 +1,7 @@
-from datetime import datetime
+from datetime import datetime, timedelta
+from functools import cache
 from logging import getLogger
-from typing import Iterator
+from typing import Iterator, List
 
 from attr import dataclass
 from bs4 import BeautifulSoup
@@ -47,12 +48,7 @@ class IservExercises(Task):
         await self.bot.channel_available.wait()
 
     async def run(self) -> None:
-        shown_excercises = [elem['id'] for elem in self.shown_excercises.all()]
-        not_shown_excercises = [
-            id for id in await self._get_excercise_ids() if not id in shown_excercises
-        ]
-
-        for id in not_shown_excercises:
+        for id in await self._get_not_shown_exercise_ids():
             exercise = await self._get_exercise(id)
             embed = await self._generate_embed(exercise)
             await self.bot.channel.send(content='@everyone', embed=embed)
@@ -61,20 +57,11 @@ class IservExercises(Task):
                 {
                     'id': exercise.id,
                     'end_date': exercise.end_date.timestamp(),
-                    'reminder_shown': False,
+                    'reminder_shown': await self._due_in_under(exercise.end_date, 60),
                 }
             )
 
-        should_be_reminded = [
-            elem['id']
-            for elem in self.shown_excercises.all()
-            if not elem['reminder_shown']
-            and (
-                (datetime.fromtimestamp(elem['end_date']) - datetime.now()).seconds / 60
-            )
-            < 60
-        ]
-        for id in should_be_reminded:
+        for id in await self._get_should_be_reminded_ids():
             exercise = await self._get_exercise(id)
             embed = await self._generate_embed(exercise, is_reminder=True)
             await self.bot.channel.send(content='@everyone', embed=embed)
@@ -82,6 +69,33 @@ class IservExercises(Task):
             self.shown_excercises.update(
                 set('reminder_shown', True), where('id') == exercise.id
             )
+
+    async def _get_should_be_reminded_ids(self) -> List[int]:
+        should_be_reminded = []
+        for elem in self.shown_excercises.all():
+            if elem['reminder_shown']:
+                continue
+
+            if not await self._due_in_under(
+                datetime.fromtimestamp(elem['end_date']), 60
+            ):
+                continue
+
+            should_be_reminded.append(elem['id'])
+
+        return should_be_reminded
+
+    async def _get_not_shown_exercise_ids(self) -> List[int]:
+        shown_excercise_ids = [elem['id'] for elem in self.shown_excercises.all()]
+        return [
+            id
+            for id in await self._get_excercise_ids()
+            if not id in shown_excercise_ids
+        ]
+
+    async def _due_in_under(self, dt: datetime, minutes: int) -> bool:
+        delta = dt - datetime.now()
+        return delta.days < 1 and (delta.seconds / 60) < minutes
 
     async def _generate_embed(self, exercise: Exercise, is_reminder=False) -> Embed:
         title = (
