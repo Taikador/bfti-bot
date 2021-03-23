@@ -40,7 +40,7 @@ class Yeet(Cog):
         target_member: Member = target
 
         if not target_member.voice:
-            await ctx.send(f'User <@!{target_member}> has to be in a voice channel')
+            await ctx.send(f'User <@!{target_member.id}> has to be in a voice channel')
             return
 
         args: List[str] = ctx.message.content.split(' ')
@@ -65,7 +65,7 @@ class Yeet(Cog):
         )
 
         if not ctx.guild:
-            await ctx.send(f'User <@!{target_member}> has to be in a voice channel')
+            await ctx.send(f'User <@!{target_member.id}> has to be in a voice channel')
             return
 
         guild: Guild = ctx.guild  # pyright: reportGeneralTypeIssues=false
@@ -83,7 +83,7 @@ class Yeet(Cog):
             return
 
         await ctx.send(
-            f'User <@!{target_member}> will be moved around between {[channel.name for channel in channels]} for {duration}s'
+            f'User <@!{target_member.id}> will be moved around between {[channel.name for channel in channels]} for {duration}s'
         )
 
         prev_channel = target_member.voice.channel
