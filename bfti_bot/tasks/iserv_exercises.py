@@ -95,7 +95,7 @@ class IservExercises(Task):
 
     async def _due_in_under(self, dt: datetime, minutes: int) -> bool:
         delta = dt - datetime.now()
-        return delta.days < 1 and (delta.seconds / 60) < minutes
+        return delta.days == 0 and (delta.seconds / 60) < minutes
 
     async def _generate_embed(self, exercise: Exercise, is_reminder=False) -> Embed:
         title = (
