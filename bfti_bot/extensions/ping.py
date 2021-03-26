@@ -8,10 +8,13 @@ class Ping(Cog):
     def __init__(self, bot: Bot):
         self.bot = bot
 
-    @command(description='Pong game :D')
+    @command(
+        aliases=['p'],
+        description='Pong game :D'
+        )
     @has_any_role(*config.moderation_roles)
     async def ping(self, ctx: Context) -> None:
-        await ctx.send(f'Pong {ctx.author}')
+        await ctx.send(f'Pong {ctx.message.author.mention} Your latency is: {round(self.bot.latency * 1000)} ms')
 
 
 def setup(bot: Bot) -> None:
