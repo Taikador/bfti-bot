@@ -37,7 +37,7 @@ class IservExercises(Task):
             '_password': config.iserv_password,
         }
         self.login_url = (
-            'https://bbs2celle.eu/iserv/app/login?target=%2Fiserv%2Fexercise'
+            f'https://{config.iserv_hostname}/iserv/app/login?target=%2Fiserv%2Fexercise'
         )
         # 22.03.2021 08:00
         self.datetime_format = '%d.%m.%Y %H:%M'
