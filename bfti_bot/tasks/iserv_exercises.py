@@ -111,6 +111,9 @@ class IservExercises(Task):
         )
 
         embed.set_author(name=exercise.author)
+
+        if len(exercise.message) > 1022:
+            exercise.message = exercise.message[1018:] + '*...*'
         embed.add_field(
             name='Nachricht',
             value=exercise.message,
