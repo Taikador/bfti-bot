@@ -1,4 +1,5 @@
-from discord import Game, Intents, Object
+from discord import Game, Intents
+import uvloop
 
 from bfti_bot.bot import Bot
 from bfti_bot.config import config
@@ -13,4 +14,6 @@ bot = Bot(
     # allowed_mentions=AllowedMentions(everyone=False, roles=allowed_roles),
     intents=Intents().all(),
 )
+
+uvloop.install()
 bot.run(config.token)
