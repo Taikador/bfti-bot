@@ -1,4 +1,4 @@
-python bfti_bot
+python -m bfti_bot
 
 while [ $? -eq 69 ]; do
     python bfti_bot

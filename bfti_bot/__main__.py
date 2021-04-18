@@ -1,9 +1,12 @@
+import asyncio
 from discord import Game, Intents
 import uvloop
+from logging import getLogger
 
 from bfti_bot.bot import Bot
 from bfti_bot.config import config
 
+log = getLogger('bot')
 # allowed_roles = [Object(id_) for id_ in config.moderation_roles]
 
 bot = Bot(
@@ -16,4 +19,12 @@ bot = Bot(
 )
 
 uvloop.install()
-bot.run(config.token)
+
+loop = asyncio.get_event_loop()
+try:
+    loop.run_until_complete(bot.start(config.token))
+except KeyboardInterrupt:
+    log.info('Received signal to terminate bot and event loop.')
+finally:
+    loop.run_until_complete(loop.shutdown_asyncgens())
+    loop.close()

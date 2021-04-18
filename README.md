@@ -12,6 +12,6 @@ A discord bot that displays IServ exercises and E-Mails
 - [x] Make Task.run_once() optional
 - [x] Display new excercises
 - [ ] Display new mails
-- [ ] Fix console errors on ctrl c - restart not working
+- [x] Fix console errors on ctrl c - restart not working
 - [x] Disable say_hello and login mesage
 - [ ] Allow for more than one Task in a file
