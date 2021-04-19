@@ -40,6 +40,8 @@ class Bot(commands.Bot):
         self.channel_available = asyncio.Event()
         self.channel: Optional[TextChannel] = None
 
+        self.signature = 'Bot erstellt von: Tristan :D'
+
         self.load_extensions()
         self.load_tasks()
 

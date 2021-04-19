@@ -122,7 +122,7 @@ class IservExercises(Task):
             name='Abgabetermin',
             value=exercise.end_date.strftime(self.datetime_format),
         )
-        embed.set_footer(text='Bot erstellt von: Tristan :D')
+        embed.set_footer(text=self.bot.signature)
 
         return embed
 
