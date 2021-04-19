@@ -62,7 +62,7 @@ class IservMails(Task):
 
     async def _generate_embed(self, mail: MailMessage) -> Embed:
         embed = Embed(
-            title = mail.subject,
+            title = f'Neue E-Mail: {mail.subject}',
             type='rich',
             colour=Colour.dark_magenta(),
             url=f'https://bbs2celle.eu/iserv/mail?path=INBOX&msg={mail.uid}'
