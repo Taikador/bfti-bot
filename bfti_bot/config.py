@@ -29,6 +29,7 @@ class Config(SimpleNamespace):
         self.iserv_hostname: str = self._getenv_or_throw('ISERV_HOSTNAME')
         self.iserv_username: str = self._getenv_or_throw('ISERV_USERNAME')
         self.iserv_password: str = self._getenv_or_throw('ISERV_PASSWORD')
+        self.target_mail: str = self._getenv_or_throw('TARGET_MAIL')
 
         self.debug: bool = self._getenv_or_throw('DEBUG', 'true') != 'false'
 

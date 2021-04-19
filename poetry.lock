@@ -176,6 +176,14 @@ optional = false
 python-versions = ">=3.4"
 
 [[package]]
+name = "imap-tools"
+version = "0.39.0"
+description = "Work with email and mailbox by IMAP"
+category = "main"
+optional = false
+python-versions = "*"
+
+[[package]]
 name = "isort"
 version = "5.7.0"
 description = "A Python utility / library to sort Python imports."
@@ -429,7 +437,7 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "c2b613148d30d8e48fcb4e4d98db157e7286e3d5caa44b95d05169fca0626362"
+content-hash = "6555b2ef5fd5b4c3a45aa1c7775816cb345f91728ccb51c880e69311f6be315a"
 
 [metadata.files]
 aiohttp = [
@@ -567,6 +575,10 @@ humanfriendly = [
 idna = [
     {file = "idna-3.1-py3-none-any.whl", hash = "sha256:5205d03e7bcbb919cc9c19885f9920d622ca52448306f2377daede5cf3faac16"},
     {file = "idna-3.1.tar.gz", hash = "sha256:c5b02147e01ea9920e6b0a3f1f7bb833612d507592c837a6c49552768f4054e1"},
+]
+imap-tools = [
+    {file = "imap-tools-0.39.0.tar.gz", hash = "sha256:00fa5b5046c0437976ad7dd5e45b1847bfd5d14bb858c9b19a5cf2994bba96d9"},
+    {file = "imap_tools-0.39.0-py3-none-any.whl", hash = "sha256:3b4d0a911bc48ea7c0beac6a15b6f65b6fdf2b066a67cd3536253ec98e401e83"},
 ]
 isort = [
     {file = "isort-5.7.0-py3-none-any.whl", hash = "sha256:fff4f0c04e1825522ce6949973e83110a6e907750cd92d128b0d14aaaadbffdc"},

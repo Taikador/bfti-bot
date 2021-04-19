@@ -14,6 +14,7 @@ rope = "^0.18.0"
 tinydb = "^4.4.0"
 beautifulsoup4 = "^4.9.3"
 uvloop = "^0.15.2"
+imap-tools = "^0.39.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
