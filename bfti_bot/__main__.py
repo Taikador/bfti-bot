@@ -1,8 +1,9 @@
-import signal
 import asyncio
-from discord import Game, Intents
-import uvloop
+import signal
 from logging import getLogger
+
+import uvloop
+from discord import Game, Intents
 
 from bfti_bot.bot import Bot
 from bfti_bot.config import config
@@ -20,7 +21,7 @@ bot = Bot(
     max_messages=10_000,
     # allowed_mentions=AllowedMentions(everyone=False, roles=allowed_roles),
     intents=Intents().all(),
-    loop=loop
+    loop=loop,
 )
 
 try:
@@ -38,9 +39,6 @@ except NotImplementedError:
 #     loop.close()
 
 
-
-
-
 async def runner():
     try:
         await bot.start(config.token)
@@ -48,8 +46,10 @@ async def runner():
         if not bot.is_closed():
             await bot.close()
 
+
 def stop_loop_on_completion(f):
     loop.stop()
+
 
 future = asyncio.ensure_future(runner(), loop=loop)
 future.add_done_callback(stop_loop_on_completion)

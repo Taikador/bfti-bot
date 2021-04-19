@@ -1,5 +1,4 @@
-from datetime import datetime, timedelta
-from functools import cache
+from datetime import datetime
 from logging import getLogger
 from typing import Iterator, List
 
@@ -10,7 +9,6 @@ from tinydb import where
 from tinydb.operations import set
 
 from bfti_bot.bot import Bot
-
 from ..background_task import DefaultScheduler, Task
 from ..config import config
 
@@ -36,9 +34,7 @@ class IservExercises(Task):
             '_username': config.iserv_username,
             '_password': config.iserv_password,
         }
-        self.login_url = (
-            f'https://{config.iserv_hostname}/iserv/app/login?target=%2Fiserv%2Fexercise'
-        )
+        self.login_url = f'https://{config.iserv_hostname}/iserv/app/login?target=%2Fiserv%2Fexercise'
         # 22.03.2021 08:00
         self.datetime_format = '%d.%m.%Y %H:%M'
 
