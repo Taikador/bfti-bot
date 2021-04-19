@@ -36,6 +36,7 @@ class Bot(commands.Bot):
 
         self.db = TinyDB('db.json')
         self.http_session = aiohttp.ClientSession()
+        self.guild: Optional[Guild] = None
         self._guild_available = asyncio.Event()
         self.channel_available = asyncio.Event()
         self.channel: Optional[TextChannel] = None
@@ -118,6 +119,7 @@ class Bot(commands.Bot):
         if guild.id != config.guild_id:
             return
 
+        self.guild = self.get_guild(config.guild_id)
         self._guild_available.set()
 
     async def on_guild_unavailable(self, guild: Guild) -> None:
