@@ -29,7 +29,7 @@ class IservMails(Task):
 
     async def run_once(self) -> None:
         await self.loop.run_in_executor(self.executor, self._init_mailbox)
-        await self.bot.channel_available.wait()
+        await self.bot.mail_channel_available.wait()
 
     async def run(self) -> None:
         mails = await self.loop.run_in_executor(self.executor, self._get_mails)
@@ -41,7 +41,7 @@ class IservMails(Task):
 
         for mail in not_shown_mails:
             embed = await self._generate_embed(mail)
-            await self.bot.channel.send(content='@everyone', embed=embed)
+            await self.bot.mail_channel.send(content='@everyone', embed=embed)
 
     def _cut_mail_text(self, text: str) -> str:
         if len(text.encode('utf-8')) > 5990:
@@ -54,10 +54,9 @@ class IservMails(Task):
 
     async def _generate_embed(self, mail: MailMessage) -> Embed:
         embed = Embed(
-            title=f'Neue E-Mail: {mail.subject}',
+            title=f'`Neue E-Mail: {mail.subject}`',
             type='rich',
             colour=Colour.dark_magenta(),
-            url=f'https://bbs2celle.eu/iserv/mail?path=INBOX&msg={mail.uid}',
         )
 
         text = self._cut_mail_text(mail.text)

@@ -25,6 +25,7 @@ class Config(SimpleNamespace):
         ]
         self.guild_id: int = int(self._getenv_or_throw('GUILD_ID'))
         self.channel_id: int = int(self._getenv_or_throw('CHANNEL_ID'))
+        self.mail_channel_id: int = int(self._getenv_or_throw('MAIL_CHANNEL_ID'))
 
         self.iserv_hostname: str = self._getenv_or_throw('ISERV_HOSTNAME')
         self.iserv_username: str = self._getenv_or_throw('ISERV_USERNAME')
