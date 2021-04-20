@@ -23,6 +23,7 @@ class Config(SimpleNamespace):
             int(role_id)
             for role_id in self._getenv_or_throw('MODERATION_ROLES').split(',')
         ]
+        self.teacher_role: int = int(self._getenv_or_throw('TEACHER_ROLE'))
         self.guild_id: int = int(self._getenv_or_throw('GUILD_ID'))
         self.channel_id: int = int(self._getenv_or_throw('CHANNEL_ID'))
         self.mail_channel_id: int = int(self._getenv_or_throw('MAIL_CHANNEL_ID'))

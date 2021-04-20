@@ -35,11 +35,12 @@ class Misc(Cog):
         await self.bot._guild_available.wait()
         
         current_channel = ctx.author.voice.channel
-        other_channels = [channel for channel in self.bot.guild.voice_channels if not channel.id == current_channel.id]
+        other_channels  = [channel for channel in self.bot.guild.voice_channels if not channel.id == current_channel.id]
+        teacher_role    = self.bot.guild.get_role(config.teacher_role)
 
         for channel in other_channels:
             for member in channel.members:
-                if not member.voice:
+                if not member.voice or teacher_role in member.roles:
                     continue
                 await member.move_to(current_channel)
         await ctx.send(f'{ctx.message.author.mention} moved all members')
