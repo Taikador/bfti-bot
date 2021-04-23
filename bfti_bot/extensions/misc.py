@@ -1,6 +1,9 @@
+from os import name
 from discord.channel import VoiceChannel
 from discord.ext.commands import Cog, Context, command, has_any_role
 from discord.ext.commands.core import check
+from discord.colour import Color, Colour
+from discord.embeds import Embed
 
 from ..bot import Bot
 from ..config import config
@@ -45,6 +48,26 @@ class Misc(Cog):
                 await member.move_to(current_channel)
         await ctx.send(f'{ctx.message.author.mention} moved all members')
 
+    @command(
+        aliases=['e'],
+        description='Create a custom embed',
+        usage='<author> / <title> / <message> / <date>',
+    )
+    @has_any_role(*config.moderation_roles)
+    async def embed(self, ctx, *, content: str):
+        author, title, message, date = content.split('/')
+        await ctx.channel.purge(limit=1)
+        embed = Embed(
+            title=title,
+            type='rich', 
+            colour=Color.dark_green(),
+            )
+        embed.set_author(name=author)
+        embed.add_field(name='Aufgabe/Nachricht', value=message)
+        embed.add_field(name='Datum', value=date)
+        embed.set_footer(text=self.bot.signature)
+        
+        await ctx.send(embed=embed)
 
 def setup(bot: Bot) -> None:
     bot.add_cog(Misc(bot))

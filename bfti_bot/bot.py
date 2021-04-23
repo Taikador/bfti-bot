@@ -43,7 +43,7 @@ class Bot(commands.Bot):
         self.mail_channel_available = asyncio.Event()
         self.mail_channel: Optional[TextChannel] = None
 
-        self.signature = 'Bot erstellt von: Tristan :D'
+        self.signature = 'Bot erstellt von: Tristan und Noah :D'
 
         self.load_extensions()
         self.load_tasks()
