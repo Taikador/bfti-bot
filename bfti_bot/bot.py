@@ -42,6 +42,8 @@ class Bot(commands.Bot):
         self.channel: Optional[TextChannel] = None
         self.mail_channel_available = asyncio.Event()
         self.mail_channel: Optional[TextChannel] = None
+        self.calendar_channel_available = asyncio.Event()
+        self.calendar_channel: Optional[TextChannel] = None
 
         self.signature = 'Bot erstellt von: Tristan und Noah :D'
 
@@ -114,6 +116,8 @@ class Bot(commands.Bot):
         self.channel_available.set()
         self.mail_channel = self.get_channel(config.mail_channel_id)
         self.mail_channel_available.set()
+        self.calendar_channel = self.get_channel(config.calendar_channel_id)
+        self.calendar_channel_available.set()
 
     async def on_guild_available(self, guild: Guild) -> None:
         if guild.id != config.guild_id:

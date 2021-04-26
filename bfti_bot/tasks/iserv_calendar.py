@@ -54,7 +54,7 @@ class IServCalendar(Task):
 
         for event in not_shown_events:
             embed = await self._generate_embed(event)
-            await self.bot.channel.send(content='@everyone', embed=embed)
+            await self.bot.calendar_channel.send(content='@everyone', embed=embed)
     
     def _init_calendar(self) -> None:
         self.client      = davclient.DAVClient(
