@@ -51,12 +51,16 @@ class Misc(Cog):
     @command(
         aliases=['e'],
         description='Create a custom embed',
-        usage='<author> / <title> / <message> / <date>',
+        usage='Usage: `<author> # <title> # <message> # <date>`',
     )
     @has_any_role(*config.moderation_roles)
-    async def embed(self, ctx, *, content: str):
-        author, title, message, date = content.split('/')
-        await ctx.channel.purge(limit=1)
+    async def embed(self, ctx : Context, *, content: str):
+        data = content.split('#')
+        if len(data) != 4:
+            await ctx.send(ctx.command.usage)
+            return
+        author, title, message, date = data
+        await ctx.message.delete()
         embed = Embed(
             title=title,
             type='rich', 

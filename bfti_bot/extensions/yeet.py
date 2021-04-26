@@ -19,7 +19,7 @@ class Yeet(Cog):
 
     @command(
         aliases=['y'],
-        usage='<user> <time in s> [<channel regex>]',
+        usage='Usage: `<user> <time in s> [<channel regex>]`',
         description='Repeatly changes a users voice channel',
     )
     @has_any_role(*config.moderation_roles)
