@@ -104,9 +104,9 @@ class IServCalendar(Task):
 
         if event.description:
             embed.add_field(name='Beschreibung', value=event.description)
-        embed.add_field(name='Datum', value=event.createdAt.strftime('%m/%d/%Y %H:%M'), inline=False)
         embed.add_field(name='Start', value=event.dateStart.strftime('%m/%d/%Y %H:%M'))
         embed.add_field(name='Ende', value=event.dateEnd.strftime('%m/%d/%Y %H:%M'))
+        embed.add_field(name='Erstellt', value=event.createdAt.strftime('%m/%d/%Y %H:%M'), inline=False)  
         embed.set_footer(text=self.bot.signature)
 
         return embed
