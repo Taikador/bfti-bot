@@ -7,7 +7,7 @@ from pathlib import Path
 from typing import Dict, Optional
 
 import aiohttp
-from discord import Guild
+from discord import Guild, Role
 from discord.channel import TextChannel
 from discord.ext import commands
 from discord.ext.commands import Cog, Command
@@ -44,6 +44,8 @@ class Bot(commands.Bot):
         self.mail_channel: Optional[TextChannel] = None
         self.calendar_channel_available = asyncio.Event()
         self.calendar_channel: Optional[TextChannel] = None
+
+        self.teacher_role: Optional[Role] = None
 
         self.signature = 'Bot erstellt von: Tristan und Noah :D'
 
@@ -118,6 +120,7 @@ class Bot(commands.Bot):
         self.mail_channel_available.set()
         self.calendar_channel = self.get_channel(config.calendar_channel_id)
         self.calendar_channel_available.set()
+        self.teacher_role = self.guild.get_role(config.teacher_role_id)
 
     async def on_guild_available(self, guild: Guild) -> None:
         if guild.id != config.guild_id:

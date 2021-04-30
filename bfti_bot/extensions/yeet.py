@@ -6,6 +6,7 @@ from typing import List
 
 from discord import Guild, Member, Message, VoiceChannel
 from discord.ext.commands import Cog, Context, command, has_any_role
+from discord.role import Role
 
 from ..bot import Bot
 from ..config import config
@@ -38,6 +39,9 @@ class Yeet(Cog):
             await ctx.send("Something wen't wrong")
             return
         target_member: Member = target
+        if self.bot.teacher_role in target_member.roles:
+            await ctx.send("Can't yeet teachers")
+            return
 
         if not target_member.voice:
             await ctx.send(f'User <@!{target_member.id}> has to be in a voice channel')
@@ -76,7 +80,7 @@ class Yeet(Cog):
         channels = [
             channel
             for channel in guild.voice_channels
-            if any(pattern.match(channel.name) for pattern in patterns)
+            if any(pattern.match(channel.name) for pattern in patterns) and not await self._member_with_role_in_channel(channel, self.bot.teacher_role)
         ]
         if len(channels) < 2:
             await ctx.send(ctx.command.usage)
@@ -90,6 +94,15 @@ class Yeet(Cog):
         if await self._move_around(target_member, channels, duration):
             await target_member.move_to(prev_channel)
 
+    async def _member_with_role_in_channel(
+        self,
+        channel: VoiceChannel, 
+        role: Role
+        ) -> bool:
+        for member in channel.members:
+            if self.bot.teacher_role in member.roles:
+                return True
+        return False
     async def _move_around(
         self, target: Member, channels: List[VoiceChannel], duration: float
     ) -> bool:
