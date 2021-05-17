@@ -120,7 +120,7 @@ class Bot(commands.Bot):
         self.mail_channel_available.set()
         self.calendar_channel = self.get_channel(config.calendar_channel_id)
         self.calendar_channel_available.set()
-        self.teacher_role = self.guild.get_role(config.teacher_role_id)
+        self.teacher_role = self.guild.get_role(config.teacher_role)
 
     async def on_guild_available(self, guild: Guild) -> None:
         if guild.id != config.guild_id:
