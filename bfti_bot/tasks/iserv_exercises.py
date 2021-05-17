@@ -138,13 +138,14 @@ class IservExercises(Task):
             )
             exercise.title = soup.find('h1').text
 
-            msgs = soup.find(True, {'class': ['p-3', 'text-break-word']}).find_all()
-            if len(msgs) == 0:
+            div = soup.find(True, {'class': ['p-3', 'text-break-word']})
+            first_child = div.find()
+            if first_child is None:
                 exercise.message = '-'
-            elif msgs[0].name == 'p':
-                exercise.message = '\n'.join([p.text for p in msgs])
-            elif msgs[0].name == 'ol':
-                exercise.message = '\n'.join([li.text for li in msgs.find_all('li')])
+            elif first_child.name == 'p':
+                exercise.message = '\n'.join([p.text for p in div.find_all('p')])
+            elif first_child.name == 'ol':
+                exercise.message = '\n'.join([li.text for li in div.find_all('li')])
             else:
                 exercise.message = 'Error parsing message contents'
 
